@@ -23,7 +23,7 @@ struct CoinDetailView: View {
             .frame(height: 200)
             .padding()
             
-            LabeledContent("Listed at", value: Date(timeIntervalSince1970: coin.listedAt).formatted(date: .abbreviated, time: .complete))
+            LabeledContent("Listed at", value: Date(timeIntervalSince1970: coin.listedAt).formatted(date: .abbreviated, time: .omitted))
             Divider()
             LabeledContent("Tier", value: "\(coin.tier)")
             LabeledContent("Rank", value: "\(coin.rank)")

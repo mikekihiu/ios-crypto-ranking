@@ -13,7 +13,6 @@ struct TopCoinsView: View {
     
     var body: some View {
         rootView
-            .navigationTitle(viewModel.coins.isEmpty ? "" : "Top \(viewModel.coins.count) coins")
             .onAppear {
                 Task {
                     await viewModel.syncCoins()
@@ -23,19 +22,27 @@ struct TopCoinsView: View {
                 Text(viewModel.error?.localizedDescription ?? "")
                 Button("Dismiss") { }
             }
-            .toolbar {
-                sortView
-            }
     }
     
     private var rootView: some View {
         Group {
             if viewModel.animate {
                 ProgressView()
-            } else if viewModel.coins.isEmpty {
+            } else if viewModel.coins.isEmpty, !viewModel.isSearching {
                 NoContentView(description: "No entries found. Please try again later")
             } else {
-                CoinsListView(viewModel: viewModel)
+                Group {
+                    if viewModel.coins.isEmpty {
+                        Text("No results for \(viewModel.searchTextBinding.wrappedValue)" )
+                    } else {
+                        CoinsListView(viewModel: viewModel)
+                    }
+                }
+                .navigationTitle("Top \(viewModel.coins.count) coins")
+                .toolbar {
+                    sortView
+                }
+                .searchable(text: viewModel.searchTextBinding, prompt: "Search...")
             }
         }
     }
@@ -48,13 +55,7 @@ struct TopCoinsView: View {
                 }
             }
         } label: {
-            Group {
-                if viewModel.coins.isEmpty {
-                    EmptyView()
-                } else {
-                    Label("Show Menu", systemImage: "line.3.horizontal.decrease")
-                }
-            }
+            Label("Show Menu", systemImage: "line.3.horizontal.decrease")
         }
     }
 }

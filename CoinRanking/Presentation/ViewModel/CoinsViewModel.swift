@@ -14,6 +14,7 @@ final class CoinsViewModel {
     
     private var allCoins: [Coin] = []
     private var subscription: AnyCancellable?
+    private var searchText = ""
     
     var currentPage = 1
     var error: Error?
@@ -27,8 +28,13 @@ final class CoinsViewModel {
     
     // Filtered by specified criteria
     var coins: [Coin] {
-        let limit = min(allCoins.count, currentPage * 20)
-        return Array(allCoins.sorted(using: sorter.descriptor).prefix(upTo: limit))
+        let results = allCoins
+            .filter {
+                isSearching ? $0.name.localizedCaseInsensitiveContains(searchText) : true
+            }
+            .sorted(using: sorter.descriptor)
+        let limit = min(currentPage * 20, results.count)
+        return Array(results.prefix(upTo: limit))
     }
     
     var showAlert: Binding<Bool> {
@@ -37,6 +43,18 @@ final class CoinsViewModel {
         } set: { _ in
             self.error = nil
         }
+    }
+    
+    var searchTextBinding: Binding<String> {
+        Binding {
+            self.searchText
+        } set: { newValue in
+            self.searchText = newValue
+        }
+    }
+    
+    var isSearching: Bool {
+        !searchText.replacingOccurrences(of: " ", with: "").isEmpty
     }
     
     init(
