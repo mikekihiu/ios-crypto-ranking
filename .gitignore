@@ -1,0 +1,9 @@
+!*.xcodeproj/xcshareddata/!*.xcworkspace/contents.xcworkspacedata
+/*.gcno
+**/xcshareddata/WorkspaceSettings.xcsettings
+*.xcuserdata
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcuserstate
+*./Package.resolved
+*.DS_Store
